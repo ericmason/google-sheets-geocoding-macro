@@ -317,18 +317,22 @@ function addressToPosition() {
   for (addressRow = 1; addressRow <= cells.getNumRows(); ++addressRow) {
     var address = cells.getCell(addressRow, addressColumn).getValue();
     
-    // Geocode the address and plug the lat, lng pair into the 
-    // 2nd and 3rd elements of the current range row.
-    location = geocoder.geocode(address);
-   
-    // Only change cells if geocoder seems to have gotten a 
-    // valid response.
-    if (location.status == 'OK') {
-      lat = location["results"][0]["geometry"]["location"]["lat"];
-      lng = location["results"][0]["geometry"]["location"]["lng"];
+    try {
+      // Geocode the address and plug the lat, lng pair into the 
+      // 2nd and 3rd elements of the current range row.
+      location = geocoder.geocode(address);
       
-      cells.getCell(addressRow, latColumn).setValue(lat);
-      cells.getCell(addressRow, lngColumn).setValue(lng);
+      // Only change cells if geocoder seems to have gotten a 
+      // valid response.
+      if (location.status == 'OK') {
+        lat = location["results"][0]["geometry"]["location"]["lat"];
+        lng = location["results"][0]["geometry"]["location"]["lng"];
+        
+        cells.getCell(addressRow, latColumn).setValue(lat);
+        cells.getCell(addressRow, lngColumn).setValue(lng);
+      }
+    } catch (e) {
+      // ignore errors and keep going
     }
   }
 };
@@ -411,4 +415,3 @@ function onOpen() {
   // SpreadsheetApp.getUi()
   //   .createMenu();
 };
-
